@@ -1,11 +1,12 @@
-// we need to be able to parse:
+// we need to be able to parse expressions like:
 // 2
 // 2.4
 // +2
 // -2
 // +2.4
 // -2.4
-// +2 - +6
+// +2 / +6.4
+// -3.2 * 7
 // no .4 for now, only 0.4 allowed
 
 import {
@@ -20,7 +21,7 @@ import { Parser } from "../src/parser";
 export const parser = new Parser();
 
 // so in the grand scheme, what we really are parsing is
-// oneOrMore (expression) OR number (alone number)
+// expression OR number (alone number)
 // where expression = <number> <operator> <number>
 // here number can be signed, or decimal, or both
 
