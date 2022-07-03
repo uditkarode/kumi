@@ -24,4 +24,5 @@ export class ParseError extends Error {
   }
 }
 
+// for errors in code unrelated to the target string
 export class InternalParserError extends Error {}
