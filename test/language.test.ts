@@ -11,7 +11,7 @@ it("can parse an example assignment", () => {
     stringLiteral("=")(ca);
     many(stringLiteral(" "))(ca);
     const value = within('"', '"')(ca);
-    many(stringLiteral(" "))(ca);
+    stringLiteral(";")(ca);
 
     return {
       type: "const-string-declaration",
@@ -21,7 +21,7 @@ it("can parse an example assignment", () => {
   });
 
   const parser = new Parser();
-  const result = parser.parse('const name = "kumi"', ConstExpr);
+  const result = parser.parse('const name = "kumi";', ConstExpr);
 
   expect(result).toEqual({
     type: "const-string-declaration",

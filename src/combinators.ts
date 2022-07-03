@@ -40,7 +40,9 @@ export const many = <T>(c: Combinator<T>, zeroAllowed: boolean = true) =>
 export const within = (str1: string, str2: string) =>
   Parser.combinator((ca) => {
     ca.consume(str1);
-    return ca.consume(str2, Backtrack.IfEncountered);
+    const r = ca.consume(str2, Backtrack.IfEncountered);
+    ca.consume(str1);
+    return r;
   });
 
 export const spaces = many(stringLiteral(" "), false);
