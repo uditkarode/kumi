@@ -8,10 +8,18 @@ export type ParseFn = <T extends Backtrack>(
 
 export type CombinatorArg = {
   consume: ParseFn;
-  getCursorPosition: () => number;
-  setCursorPosition: (pos: number) => void;
   error: (v: { expected: string; found: string }) => ParseError;
+  expect: <T>(c: Combinator<T>) => SureCombinator<T>;
+  cursor: {
+    get: () => number;
+    set: (pos: number) => void;
+  };
 };
+
+export type ParserCombinatorFn = <T, B extends boolean>(
+  v: Combinator<T>,
+  sure?: B
+) => B extends true ? SureCombinator<T> : Combinator<T>;
 
 export type Combinator<T> = (ca: CombinatorArg) => T | ParseError;
 

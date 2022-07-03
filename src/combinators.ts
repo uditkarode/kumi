@@ -1,4 +1,4 @@
-import { InternalParserError, ParseError } from "./parse-error";
+import { ParseError } from "./parse-error";
 import { Parser } from "./parser";
 import { Combinator } from "./types";
 import { Backtrack, extract, Try } from "./utils";
@@ -64,18 +64,15 @@ export const oneOf = <T, U>(x: Combinator<T>, y: Combinator<U>) =>
 
 export const firstIn = (combinators: Combinator<string>[]) =>
   Parser.combinator((ca) => {
-    const start = ca.getCursorPosition();
+    const start = ca.cursor.get();
     const results = [] as { value: string; index: number }[];
 
     for (const combinator of combinators) {
-      ca.setCursorPosition(start);
+      ca.cursor.set(start);
       const result = Try(combinator)(ca);
 
-      if (
-        !(result instanceof InternalParserError) &&
-        !(result instanceof ParseError)
-      ) {
-        results.push({ value: result, index: ca.getCursorPosition() });
+      if (!(result instanceof ParseError)) {
+        results.push({ value: result, index: ca.cursor.get() });
       }
     }
 
@@ -87,7 +84,7 @@ export const firstIn = (combinators: Combinator<string>[]) =>
     else {
       const indexes = results.map((x) => x.index);
       const result = results[indexes.indexOf(Math.min(...indexes))];
-      ca.setCursorPosition(result.index);
+      ca.cursor.set(result.index);
       return result.value;
     }
-  });
+  }, true);
