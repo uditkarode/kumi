@@ -8,11 +8,6 @@ export const enum Backtrack {
   IfEncountered,
 }
 
-export const extract = <T>(v: ParseError | T): T => {
-  if (v instanceof ParseError) throw v;
-  else return v;
-};
-
 export const Try = <T>(c: Combinator<T>): Combinator<T | ParseError> =>
   Parser.combinator((ca) => {
     const start = ca.cursor.get();

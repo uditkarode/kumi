@@ -23,7 +23,7 @@ export class Parser {
 
     if (b == Backtrack.IfEncountered && v.length !== 1)
       throw new InternalParserError(
-        "Can only use string with length 1 with IfEncountered backtracking"
+        "Can only use string of length 1 with IfEncountered backtracking"
       );
 
     const start = this.cursorPosition;

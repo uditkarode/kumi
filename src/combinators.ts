@@ -1,7 +1,7 @@
 import { ParseError } from "./parse-error";
 import { Parser } from "./parser";
 import { Combinator } from "./types";
-import { Backtrack, extract, Try } from "./utils";
+import { Backtrack, Try } from "./utils";
 
 export const stringLiteral = (v: string) =>
   Parser.combinator((ca) => {
@@ -26,7 +26,7 @@ export const many = <T>(c: Combinator<T>, zeroAllowed: boolean = true) =>
   Parser.combinator((ca) => {
     const items: T[] = [];
 
-    if (!zeroAllowed) items.push(extract(c(ca)));
+    if (!zeroAllowed) items.push(c(ca));
 
     while (true) {
       const result = Try(c)(ca);
