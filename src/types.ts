@@ -4,7 +4,7 @@ import { Backtrack } from "./utils";
 export type ConsumeFn = <T extends Backtrack>(
   v: string,
   b?: T
-) => T extends Backtrack.Never ? string : ParseError | string;
+) => Backtrack.Never extends T ? string : ParseError | string;
 
 export type CombinatorArg = {
   consume: ConsumeFn;
