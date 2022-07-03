@@ -14,7 +14,7 @@ export class Parser {
 
   static expect = <T>(v: T) => {
     if (v instanceof ParseError) throw v;
-    else return v as unknown as Exclude<T, ParseError>;
+    else return v as Exclude<T, ParseError>;
   };
 
   #consume = ((v: string, b: Backtrack = Backtrack.Never) => {
