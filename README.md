@@ -103,7 +103,7 @@ the second argument to `ca.consume` is the backtracking method to use. Currently
 
 **OnFail** - __returns__ a ParseError and does not increase the cursor index in case of a failure at any point  
 
-**IfEncountered** - consumes characters until the required character is reached and returns everything it consumed up until then. In case the character passed to it is not reached, throws a ParseError.  
+**IfEncountered** - consumes characters until the required character is reached and returns everything it consumed up until then. In case the character passed to it is never reached, throws a ParseError.  
 
 You can use the provided combinators to create even bigger combinators that will ultimately parse your target string.
 Remember to pass `ca` to any combinator you want parsing things, or it won't do anything!
