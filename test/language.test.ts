@@ -1,17 +1,17 @@
-import { many, spaces, stringLiteral, within } from "../src/combinators";
+import { many, spaces, stringl, within } from "../src/combinators";
 import { Parser } from "../src/parser";
 import { Backtrack } from "../src/utils";
 
 it("can parse an example assignment", () => {
   const ConstExpr = Parser.combinator((ca) => {
-    stringLiteral("const")(ca);
+    stringl("const")(ca);
     spaces(ca);
     const identifier = ca.consume(" ", Backtrack.IfEncountered);
     spaces(ca);
-    stringLiteral("=")(ca);
+    stringl("=")(ca);
     spaces(ca);
     const value = within('"', '"')(ca);
-    stringLiteral(";")(ca);
+    stringl(";")(ca);
 
     return {
       type: "const-string-declaration",

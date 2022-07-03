@@ -9,13 +9,7 @@
 // -3.2 * 7
 // no .4 for now, only 0.4 allowed
 
-import {
-  stringLiteral,
-  firstIn,
-  oneOf,
-  spaces,
-  until,
-} from "../src/combinators";
+import { stringl, firstIn, oneOf, spaces, until } from "../src/combinators";
 import { Parser } from "../src/parser";
 
 export const parser = new Parser();
@@ -61,7 +55,7 @@ const DecimalNumber = Parser.combinator((ca) => {
   // a decimal has first a whole number, then a decimal, then another whole number
   // we can depict these by just writing the respective combinators in expected order
   const beforeDecimal = WholeNumber(ca);
-  stringLiteral(".")(ca);
+  stringl(".")(ca);
   const afterDecimal = WholeNumber(ca);
 
   // we can now do our own processing and return the output in any format we'd like
@@ -82,7 +76,7 @@ const UnsignedNumber = oneOf(DecimalNumber, WholeNumber);
 // let's create another combinator for that which
 // uses our previous number combinator
 const SignedNumber = Parser.combinator((ca) => {
-  const sign = oneOf(stringLiteral("+"), stringLiteral("-"))(ca);
+  const sign = oneOf(stringl("+"), stringl("-"))(ca);
   // here we can directly get the next number using our previous defined combinators
   const number = UnsignedNumber(ca);
 
@@ -100,7 +94,7 @@ const Number = oneOf(SignedNumber, UnsignedNumber);
 const Expression = Parser.combinator((ca) => {
   const num1 = Number(ca);
   spaces(ca);
-  const operator = oneOf(stringLiteral("*"), stringLiteral("/"))(ca);
+  const operator = oneOf(stringl("*"), stringl("/"))(ca);
   spaces(ca);
   const num2 = Number(ca);
 

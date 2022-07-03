@@ -1,4 +1,4 @@
-import { spacesBetween, stringLiteral } from "../src/combinators";
+import { spacesBetween, stringl } from "../src/combinators";
 import { Parser } from "../src/parser";
 
 describe("Simple Tests", () => {
@@ -7,7 +7,7 @@ describe("Simple Tests", () => {
 
     const result = parser.parse(
       "hi hello",
-      spacesBetween([stringLiteral("hi"), stringLiteral("hello")])
+      spacesBetween([stringl("hi"), stringl("hello")])
     );
 
     expect(result).toEqual(["hi", "hello"]);

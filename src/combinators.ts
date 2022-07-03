@@ -3,7 +3,7 @@ import { Parser } from "./parser";
 import { Combinator } from "./types";
 import { Backtrack, Try } from "./utils";
 
-export const stringLiteral = (v: string) =>
+export const stringl = (v: string) =>
   Parser.combinator((ca) => {
     ca.consume(v);
     return v;
@@ -16,7 +16,7 @@ export const spacesBetween = (combinators: Combinator<unknown>[]) =>
 
     combinators.forEach((combinator, i) => {
       results.push(combinator(ca));
-      if (i != lastIndex) many(stringLiteral(" "))(ca);
+      if (i != lastIndex) many(stringl(" "))(ca);
     });
 
     return results;
@@ -45,7 +45,7 @@ export const within = (str1: string, str2: string) =>
     return r;
   });
 
-export const spaces = many(stringLiteral(" "), false);
+export const spaces = many(stringl(" "), false);
 
 export const until = (target: string) =>
   Parser.combinator((ca) => {
