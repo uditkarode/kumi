@@ -46,7 +46,7 @@ export class Parser {
     } else {
       for (const char of v)
         if (this.target[this.cursorPosition] !== char) {
-          // cursor position on target is not the same as require char
+          // cursor position on target is not the same as required char
           const err = new ParseError(
             this.cursorPosition,
             char,

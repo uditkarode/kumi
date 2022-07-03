@@ -1,12 +1,11 @@
-import { many, spaces, stringl, within } from "../src/combinators";
+import { spaces, stringl, until, within } from "../src/combinators";
 import { Parser } from "../src/parser";
-import { Backtrack } from "../src/utils";
 
 it("can parse an example assignment", () => {
   const ConstExpr = Parser.combinator((ca) => {
     stringl("const")(ca);
     spaces(ca);
-    const identifier = ca.consume(" ", Backtrack.IfEncountered);
+    const identifier = until(" ")(ca);
     spaces(ca);
     stringl("=")(ca);
     spaces(ca);
