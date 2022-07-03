@@ -1,5 +1,5 @@
 import { InternalParserError, ParseError } from "./parse-error";
-import { Combinator, ParseFn, ParserCombinatorFn } from "./types";
+import { Combinator, ConsumeFn } from "./types";
 import { Backtrack } from "./utils";
 
 export class Parser {
@@ -10,7 +10,12 @@ export class Parser {
     return this.#cursorPosition;
   }
 
-  static combinator = ((v) => v) as ParserCombinatorFn;
+  static combinator = <T>(v: Combinator<T>) => v;
+
+  static expect = <T>(v: T) => {
+    if (v instanceof ParseError) throw v;
+    else return v as unknown as Exclude<T, ParseError>;
+  };
 
   #consume = ((v: string, b: Backtrack = Backtrack.Never) => {
     if (this.target == undefined)
@@ -54,7 +59,7 @@ export class Parser {
     }
 
     return v;
-  }) as ParseFn;
+  }) as ConsumeFn;
 
   parse<T>(v: string, c: Combinator<T>) {
     this.target = `${v}\x00`;
@@ -69,11 +74,6 @@ export class Parser {
         },
         error: ({ expected, found }) =>
           new ParseError(this.#cursorPosition, expected, found),
-        expect: (c) => (ca) => {
-          const res = c(ca);
-          if (res instanceof ParseError) throw res;
-          else return res;
-        },
       });
     } catch (e) {
       if (e instanceof ParseError) return e;

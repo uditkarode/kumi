@@ -13,7 +13,7 @@ export const extract = <T>(v: ParseError | T): T => {
   else return v;
 };
 
-export const Try = <T>(c: Combinator<T>): Combinator<T> =>
+export const Try = <T>(c: Combinator<T>): Combinator<T | ParseError> =>
   Parser.combinator((ca) => {
     const start = ca.cursor.get();
     try {

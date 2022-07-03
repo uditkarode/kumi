@@ -47,7 +47,7 @@ export const spaces = many(stringLiteral(" "), false);
 
 export const until = (target: string) =>
   Parser.combinator((ca) => {
-    return ca.consume(target, Backtrack.IfEncountered);
+    return Parser.expect(ca.consume(target, Backtrack.IfEncountered));
   });
 
 export const oneOf = <T, U>(x: Combinator<T>, y: Combinator<U>) =>
@@ -87,4 +87,4 @@ export const firstIn = (combinators: Combinator<string>[]) =>
       ca.cursor.set(result.index);
       return result.value;
     }
-  }, true);
+  });
