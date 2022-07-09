@@ -1,6 +1,6 @@
 import { InternalParserError, ParseError } from "./parse-error";
 import { Combinator, ConsumeFn } from "./types";
-import { array, Backtrack } from "./utils";
+import { array, Backtrack, lined } from "./utils";
 
 export class Parser {
   #cursorPosition: number = 0;
@@ -32,13 +32,17 @@ export class Parser {
 
       let pos = v.position;
       while (true) {
-        // offset hit
-        if (progressions == maxOffset) break;
-        // line ended
-        if (currentChar(pos) == "\n") break;
         // string ended
+        if (pos < 0) break;
         if (currentChar(pos) == "\x00") break;
         if (currentChar(pos) == undefined) break;
+        // line ended
+        if (currentChar(pos) == "\n") break;
+        // offset hit
+        if (progressions == maxOffset) {
+          ret.push("...");
+          break;
+        }
 
         pos = indexProgressor(pos);
         ret.push(currentChar(pos));
@@ -57,9 +61,11 @@ export class Parser {
       (ret) => ret.join("")
     );
 
-    return (
-      `${pre}${currentChar(v.position)}${post}` +
-      "\n" +
+    return lined(
+      `expected: ${v.expected}`,
+      `found: ${v.found}`,
+      "",
+      `${pre}${currentChar(v.position)}${post}`,
       // pointer
       `${array(0, pre.length)
         .map(() => " ")
