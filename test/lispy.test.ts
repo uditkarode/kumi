@@ -18,29 +18,38 @@ const son = Parser.combinator((ca) => {
 });
 
 it("should be able to parse a simple lispy structure", () => {
-  type Content = string | [string] | [string, Content] | Content[];
+  type Content = string | [string, Content] | Content[];
+
+  const string = Parser.combinator((ca) => {
+    return Parser.expect(within('"', '"')(ca));
+  });
 
   const inner: Combinator<Content> = (ca) => {
+    // first is the function name
+    // like h1 in (h1 "hi")
     const funName = firstIn([until(" "), until(")"), until("\n"), until("\t")])(
       ca
     );
 
     // hack to peek atm
+    // we return early here if the function ends here (i.e. nothing inside)
+    // like (h1)
     if (ca.target[ca.cursor.get()] == ")") {
       return [funName];
     }
 
+    // spaces or tabs after the function name
+    // (h1 "hi")
+    //    ^
     son(ca);
 
-    const string = Parser.combinator((ca) => {
-      return Parser.expect(within('"', '"')(ca));
-    });
-
+    // either many other functions or just a string can be inside
     return [funName, oneIn<Content>(many(fun, false), string)(ca)];
   };
 
   const fun = Parser.combinator((ca) => {
     const content = combinatorWithin("(", inner, ")")(ca);
+    // whitespace that might be after the content ends
     son(ca);
     return content;
   });
@@ -56,7 +65,7 @@ it("should be able to parse a simple lispy structure", () => {
     `
 (html
   (h1 "hello")
-  (p "what's up")
+  (p "what's up)
   (list
     (ul (p "hi"))
     (ul (p "bye")))
