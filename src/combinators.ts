@@ -41,7 +41,7 @@ export const within = (str1: string, str2: string) =>
   Parser.combinator((ca) => {
     ca.consume(str1);
     const r = ca.consume(str2, Backtrack.IfEncountered);
-    ca.consume(str1);
+    ca.consume(str2);
     return r;
   });
 
