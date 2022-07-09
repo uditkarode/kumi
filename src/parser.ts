@@ -125,6 +125,7 @@ export class Parser {
 
     try {
       return c({
+        target: this.target,
         consume: this.#consume,
         cursor: {
           get: () => this.#cursorPosition,

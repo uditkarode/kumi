@@ -37,6 +37,18 @@ export const many = <T>(c: Combinator<T>, zeroAllowed: boolean = true) =>
     return items;
   });
 
+export const combinatorWithin = <T>(
+  str1: string,
+  combinator: Combinator<T>,
+  str2: string
+) =>
+  Parser.combinator((ca) => {
+    ca.consume(str1);
+    const r = combinator(ca);
+    ca.consume(str2);
+    return r;
+  });
+
 export const within = (str1: string, str2: string) =>
   Parser.combinator((ca) => {
     ca.consume(str1);
@@ -52,12 +64,25 @@ export const until = (target: string) =>
     return Parser.expect(ca.consume(target, Backtrack.IfEncountered));
   });
 
+export const oneIn = <T>(...combinators: Combinator<T>[]) =>
+  Parser.combinator((ca) => {
+    for (const c of combinators) {
+      const result = Try(c)(ca);
+      if (!(result instanceof ParseError)) return result;
+    }
+
+    throw ca.error({
+      expected: "one of the oneIn combinators to match",
+      found: "no matches",
+    });
+  });
+
 export const oneOf = <T, U>(x: Combinator<T>, y: Combinator<U>) =>
-  Parser.combinator((parse) => {
-    const xResult = Try(x)(parse);
+  Parser.combinator((ca) => {
+    const xResult = Try(x)(ca);
 
     if (xResult instanceof ParseError) {
-      const yResult = Try(y)(parse);
+      const yResult = Try(y)(ca);
       if (yResult instanceof ParseError) {
         throw yResult;
       } else return yResult;

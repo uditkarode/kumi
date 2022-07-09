@@ -7,6 +7,7 @@ export type ConsumeFn = <T extends Backtrack>(
 ) => Backtrack.Never extends T ? string : ParseError | string;
 
 export type CombinatorArg = {
+  target: string;
   consume: ConsumeFn;
   error: (v: { expected: string; found: string }) => ParseError;
   cursor: {
