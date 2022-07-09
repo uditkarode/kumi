@@ -4,7 +4,6 @@ import {
   many,
   oneIn,
   oneOf,
-  spaces,
   stringl,
   until,
   within,
@@ -12,16 +11,19 @@ import {
 import { ParseError } from "../src/parse-error";
 import { Parser } from "../src/parser";
 import { Combinator } from "../src/types";
+import { inspect } from "util";
 
 const son = Parser.combinator((ca) => {
-  many(oneOf(stringl("\n"), stringl(" ")))(ca);
+  many(oneOf(stringl("\n"), oneOf(stringl(" "), stringl("\t"))))(ca);
 });
 
 it("should be able to parse a simple lispy structure", () => {
-  type Content = string | [string] | [string, Content];
+  type Content = string | [string] | [string, Content] | Content[];
 
   const inner: Combinator<Content> = (ca) => {
-    const funName = firstIn([until(" "), until(")"), until("\n")])(ca);
+    const funName = firstIn([until(" "), until(")"), until("\n"), until("\t")])(
+      ca
+    );
 
     // hack to peek atm
     if (ca.target[ca.cursor.get()] == ")") {
@@ -34,7 +36,7 @@ it("should be able to parse a simple lispy structure", () => {
       return Parser.expect(within('"', '"')(ca));
     });
 
-    return [funName, oneIn<Content>(fun, string)(ca)];
+    return [funName, oneIn<Content>(many(fun, false), string)(ca)];
   };
 
   const fun = Parser.combinator((ca) => {
@@ -51,7 +53,14 @@ it("should be able to parse a simple lispy structure", () => {
   // parser runner code
   const parser = new Parser();
   const result = parser.parse(
-    `(html\n(h1 "hello"))\n(p "what's up")\n(hi)`,
+    `
+(html
+  (h1 "hello")
+  (p "what's up")
+  (list
+    (ul (p "hi"))
+    (ul (p "bye")))
+  (hi))`,
     lispy
   );
 
@@ -60,6 +69,6 @@ it("should be able to parse a simple lispy structure", () => {
     throw result;
   } else {
     console.log(parser.target);
-    console.log(result);
+    console.log(inspect(result, false, null, true));
   }
 });
