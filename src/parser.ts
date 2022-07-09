@@ -1,6 +1,6 @@
 import { InternalParserError, ParseError } from "./parse-error";
 import { Combinator, ConsumeFn } from "./types";
-import { Backtrack } from "./utils";
+import { array, Backtrack } from "./utils";
 
 export class Parser {
   #cursorPosition: number = 0;
@@ -15,6 +15,56 @@ export class Parser {
   static expect = <T>(v: T) => {
     if (v instanceof ParseError) throw v;
     else return v as Exclude<T, ParseError>;
+  };
+
+  static format = (v: ParseError) => {
+    const maxOffset = 10;
+    const currentChar = (pos: number) => v.target[pos];
+
+    // func to obtain pre and post
+    // we keep going till we get a newline or hit offset
+    const get = (
+      indexProgressor: (v: number) => number,
+      transformer: (v: string[]) => string
+    ) => {
+      let ret = [];
+      let progressions = 0;
+
+      let pos = v.position;
+      while (true) {
+        // offset hit
+        if (progressions == maxOffset) break;
+        // line ended
+        if (currentChar(pos) == "\n") break;
+        // string ended
+        if (currentChar(pos) == "\x00") break;
+        if (currentChar(pos) == undefined) break;
+
+        pos = indexProgressor(pos);
+        ret.push(currentChar(pos));
+        progressions++;
+      }
+
+      return transformer(ret);
+    };
+
+    const pre = get(
+      (v) => --v,
+      (ret) => ret.reverse().join("")
+    );
+    const post = get(
+      (v) => ++v,
+      (ret) => ret.join("")
+    );
+
+    return (
+      `${pre}${currentChar(v.position)}${post}` +
+      "\n" +
+      // pointer
+      `${array(0, pre.length)
+        .map(() => " ")
+        .join("")}^`
+    );
   };
 
   #consume = ((v: string, b: Backtrack = Backtrack.Never) => {
@@ -36,6 +86,7 @@ export class Parser {
           return this.target.substring(start, this.cursorPosition);
         else if (current == undefined)
           throw new ParseError(
+            this.target,
             this.cursorPosition,
             `IfEncountered couldn't reach the desired symbol '${v}'!`,
             "\0"
@@ -48,6 +99,7 @@ export class Parser {
         if (this.target[this.cursorPosition] !== char) {
           // cursor position on target is not the same as required char
           const err = new ParseError(
+            this.target,
             this.cursorPosition,
             char,
             this.target[this.cursorPosition]
@@ -73,7 +125,7 @@ export class Parser {
           set: (pos: number) => (this.#cursorPosition = pos),
         },
         error: ({ expected, found }) =>
-          new ParseError(this.#cursorPosition, expected, found),
+          new ParseError(this.target!, this.#cursorPosition, expected, found),
       });
     } catch (e) {
       if (e instanceof ParseError) return e;

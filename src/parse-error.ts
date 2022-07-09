@@ -1,15 +1,18 @@
 export class ParseError extends Error {
+  target: string;
   position: number;
   expected: string;
   found: string;
 
   constructor(
+    target: string,
     position: number,
     expected: string,
     found: string,
     message?: string
   ) {
     super(message);
+    this.target = target;
     this.position = position;
     this.expected = expected;
     this.found = found;
@@ -17,6 +20,7 @@ export class ParseError extends Error {
 
   get details() {
     return {
+      target: this.target,
       position: this.position,
       expected: this.expected,
       found: this.found,

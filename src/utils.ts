@@ -20,3 +20,7 @@ export const Try = <T>(c: Combinator<T>): Combinator<T | ParseError> =>
       } else throw e;
     }
   });
+
+export const array = (from: number, to: number) => {
+  return [...Array(to).keys()].map((v) => v + from);
+};
