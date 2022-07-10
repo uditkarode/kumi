@@ -41,14 +41,15 @@ it("should be able to parse a simple lispy structure", () => {
     return [funName, oneIn<FunContent>(many(fun, false), word)(ca)];
   };
 
-  const fun = Parser.combinator((ca) =>
-    combinatorWithin("(", funContent, ")")(ca)
-  );
+  const fun = Parser.combinator((ca) => {
+    const r = combinatorWithin("(", funContent, ")")(ca);
+    whitespace(ca);
+    return r;
+  });
 
   const lispyStructure = Parser.combinator((ca) => {
     whitespace(ca);
     const r = many(fun, false)(ca);
-    whitespace(ca);
     return r;
   });
 
