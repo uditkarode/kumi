@@ -1,9 +1,7 @@
 import {
   combinatorWithin,
-  firstIn,
   many,
   oneIn,
-  oneOf,
   stringl,
   until,
   within,
