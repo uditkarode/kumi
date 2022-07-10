@@ -1,5 +1,6 @@
 import {
   combinatorWithin,
+  firstIn,
   many,
   oneIn,
   stringl,
@@ -22,7 +23,9 @@ it("should be able to parse a simple lispy structure", () => {
 
   const funContent: Combinator<FunContent> = (ca) => {
     // like h1 in (h1 "hi")
-    const funName = oneIn(until(" "), until(")"), until("\n"), until("\t"))(ca);
+    const funName = firstIn([until(" "), until(")"), until("\n"), until("\t")])(
+      ca
+    );
 
     // we return early here if the function ends here (i.e. nothing inside)
     // like (h1)
