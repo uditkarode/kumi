@@ -18,7 +18,7 @@ const whitespace = Parser.combinator((ca) => {
 const peek: Combinator<string> = (ca) => ca.target[ca.cursor.get()];
 
 it("should be able to parse a simple lispy structure", () => {
-  type FunContent = string | [string, FunContent] | FunContent[];
+  type FunContent = [string, FunContent] | string | FunContent[];
 
   const funContent: Combinator<FunContent> = (ca) => {
     // like h1 in (h1 "hi")
@@ -41,11 +41,9 @@ it("should be able to parse a simple lispy structure", () => {
     return [funName, oneIn<FunContent>(many(fun, false), word)(ca)];
   };
 
-  const fun = Parser.combinator((ca) => {
-    const content = combinatorWithin("(", funContent, ")")(ca);
-    // whitespace that might be after the content ends
-    return content;
-  });
+  const fun = Parser.combinator((ca) =>
+    combinatorWithin("(", funContent, ")")(ca)
+  );
 
   const lispyStructure = Parser.combinator((ca) => {
     whitespace(ca);
