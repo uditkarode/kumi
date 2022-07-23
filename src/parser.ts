@@ -1,6 +1,12 @@
 import { InternalParserError, ParseError } from "./parse-error.ts";
 import { Combinator, ConsumeFn } from "./types.ts";
-import { array, Backtrack, lined } from "./utils.ts";
+import { array, lined } from "./utils.ts";
+
+export const enum Backtrack {
+  Never,
+  OnFail,
+  IfEncountered,
+}
 
 export class Parser {
   #cursorPosition = 0;
