@@ -1,7 +1,6 @@
 import { ParseError } from "./parse-error";
-import { Parser } from "./parser";
+import { Backtrack, Parser } from "./parser";
 import { Combinator } from "./types";
-import { Backtrack, Try } from "./utils";
 
 export const stringl = (v: string) =>
   Parser.combinator((ca) => {
@@ -113,5 +112,18 @@ export const firstIn = (combinators: Combinator<string>[]) =>
       const result = results[indexes.indexOf(Math.min(...indexes))];
       ca.cursor.set(result.index);
       return result.value;
+    }
+  });
+
+export const Try = <T>(c: Combinator<T>): Combinator<T | ParseError> =>
+  Parser.combinator((ca) => {
+    const start = ca.cursor.get();
+    try {
+      return c(ca);
+    } catch (e) {
+      if (e instanceof ParseError) {
+        ca.cursor.set(start);
+        return e;
+      } else throw e;
     }
   });
