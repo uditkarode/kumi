@@ -6,11 +6,10 @@ import {
   stringl,
   until,
   within,
-} from "../src/combinators";
-import { ParseError } from "../src/parse-error";
-import { Parser } from "../src/parser";
-import { Combinator } from "../src/types";
-import { inspect } from "util";
+} from "../src/combinators.ts";
+import { ParseError } from "../src/parse-error.ts";
+import { Parser } from "../src/parser.ts";
+import { Combinator } from "../src/types.ts";
 
 const whitespace = Parser.combinator((ca) => {
   return many(oneIn(stringl("\n"), stringl(" "), stringl("\t")))(ca);
@@ -18,7 +17,7 @@ const whitespace = Parser.combinator((ca) => {
 
 const peek: Combinator<string> = (ca) => ca.target[ca.cursor.get()];
 
-it("should be able to parse a simple lispy structure", () => {
+Deno.test("should be able to parse a simple lispy structure", () => {
   type FunContent = [string, FunContent] | string | FunContent[];
 
   const funContent: Combinator<FunContent> = (ca) => {
@@ -75,6 +74,6 @@ it("should be able to parse a simple lispy structure", () => {
     throw result;
   } else {
     console.log(parser.target);
-    console.log(inspect(result, false, null, true));
+    console.log(Deno.inspect(result));
   }
 });

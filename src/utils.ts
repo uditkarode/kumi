@@ -1,6 +1,6 @@
-import { ParseError } from "./parse-error";
-import { Parser } from "./parser";
-import { Combinator } from "./types";
+import { ParseError } from "./parse-error.ts";
+import { Parser } from "./parser.ts";
+import { Combinator } from "./types.ts";
 
 export const enum Backtrack {
   Never,

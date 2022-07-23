@@ -1,7 +1,8 @@
-import { spaces, stringl, until, within } from "../src/combinators";
-import { Parser } from "../src/parser";
+import { spaces, stringl, until, within } from "../src/combinators.ts";
+import { Parser } from "../src/parser.ts";
+import { expect } from "./deps.ts";
 
-it("can parse an example assignment", () => {
+Deno.test("can parse an example assignment", () => {
   const ConstExpr = Parser.combinator((ca) => {
     stringl("const")(ca);
     spaces(ca);

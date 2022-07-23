@@ -1,5 +1,5 @@
-import { ParseError } from "./parse-error";
-import { Backtrack } from "./utils";
+import { ParseError } from "./parse-error.ts";
+import { Backtrack } from "./utils.ts";
 
 export type ConsumeFn = <T extends Backtrack>(
   v: string,

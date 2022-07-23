@@ -9,8 +9,8 @@
 // -3.2 * 7
 // no .4 for now, only 0.4 allowed
 
-import { stringl, firstIn, oneOf, spaces, until } from "../src/combinators";
-import { Parser } from "../src/parser";
+import { stringl, firstIn, oneOf, spaces, until } from "../src/combinators.ts";
+import { Parser } from "../src/parser.ts";
 
 export const parser = new Parser();
 
@@ -101,4 +101,4 @@ const Expression = Parser.combinator((ca) => {
   return [num1, operator, num2];
 });
 
-console.log(parser.parse(process.argv[2], oneOf(Expression, Number)));
+console.log(parser.parse(Deno.args[0], oneOf(Expression, Number)));

@@ -1,7 +1,7 @@
-import { ParseError } from "./parse-error";
-import { Parser } from "./parser";
-import { Combinator } from "./types";
-import { Backtrack, Try } from "./utils";
+import { ParseError } from "./parse-error.ts";
+import { Parser } from "./parser.ts";
+import { Combinator } from "./types.ts";
+import { Backtrack, Try } from "./utils.ts";
 
 export const stringl = (v: string) =>
   Parser.combinator((ca) => {
@@ -22,7 +22,7 @@ export const spacesBetween = (combinators: Combinator<unknown>[]) =>
     return results;
   });
 
-export const many = <T>(c: Combinator<T>, zeroAllowed: boolean = true) =>
+export const many = <T>(c: Combinator<T>, zeroAllowed = true) =>
   Parser.combinator((ca) => {
     const items: T[] = [];
 

@@ -1,9 +1,9 @@
-import { InternalParserError, ParseError } from "./parse-error";
-import { Combinator, ConsumeFn } from "./types";
-import { array, Backtrack, lined } from "./utils";
+import { InternalParserError, ParseError } from "./parse-error.ts";
+import { Combinator, ConsumeFn } from "./types.ts";
+import { array, Backtrack, lined } from "./utils.ts";
 
 export class Parser {
-  #cursorPosition: number = 0;
+  #cursorPosition = 0;
   target: string | undefined = undefined;
 
   get cursorPosition() {
@@ -27,7 +27,7 @@ export class Parser {
       indexProgressor: (v: number) => number,
       transformer: (v: string[]) => string
     ) => {
-      let ret = [];
+      const ret = [];
       let progressions = 0;
 
       let pos = v.position;

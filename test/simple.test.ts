@@ -1,7 +1,8 @@
-import { spacesBetween, stringl } from "../src/combinators";
-import { Parser } from "../src/parser";
+import { spacesBetween, stringl } from "../src/combinators.ts";
+import { Parser } from "../src/parser.ts";
+import { expect } from "./deps.ts";
 
-it("should parse with spacesBetween", () => {
+Deno.test("should parse with spacesBetween", () => {
   const parser = new Parser();
 
   const result = parser.parse(
