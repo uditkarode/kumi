@@ -23,16 +23,14 @@ export const parser = new Parser();
 // this combinator can parse "2", "64", "3", and so on
 // just whole numbers inside a string
 const WholeNumber = Parser.combinator((ca) => {
-  // this just means it will keep going till " " or \0 (terminator)
-  // is found and will return the string between the current cursor
-  // position and the position where " " was encountered
-
   // here we use firstIn because we want to stop at
-  // the first item found among these items we also
-  // want to stop at "." since decimal will use it
+  // the first item found. we also want to stop at
+  // "." to be able to properly parse decimal values
+  // until(X) just returns a string till the next
+  // occurence of X that it finds after the cursor
   const result = firstIn([until("."), until(" "), until("\0")])(ca);
 
-  // great, we got the string till the first space
+  // great, we got a string till the first space.
   // now if it's a number we can return the number
   // from this combinator
   const numberResult = parseInt(result);
@@ -43,17 +41,16 @@ const WholeNumber = Parser.combinator((ca) => {
       found: result,
     });
 
-  // note how we looked up a string but can return a number
+  // note how we looked up a string but can return a number.
   // any combinator that uses this combinator will be able
-  // to obtain this number directly from the return value
-  // of this very combinator
+  // to directly obtain this number from the return value
   return numberResult;
 });
 
 // now we need a combinator for a decimal number, which is not very hard
 const DecimalNumber = Parser.combinator((ca) => {
-  // a decimal has first a whole number, then a decimal, then another whole number
-  // we can depict these by just writing the respective combinators in expected order
+  // a decimal has first a whole number, then a decimal, and then another whole number
+  // we can depict these by just writing the respective combinators in their expected order
   const beforeDecimal = WholeNumber(ca);
   stringl(".")(ca);
   const afterDecimal = WholeNumber(ca);
@@ -91,6 +88,9 @@ const SignedNumber = Parser.combinator((ca) => {
 // and decimal numbers
 const Number = oneOf(SignedNumber, UnsignedNumber);
 
+// here's another combinator that just uses the
+// combinators we used previously in their
+// expected order and returns an array
 const Expression = Parser.combinator((ca) => {
   const num1 = Number(ca);
   spaces(ca);
@@ -101,4 +101,5 @@ const Expression = Parser.combinator((ca) => {
   return [num1, operator, num2];
 });
 
+// ultimately we parse (expression OR number), like mentioned at the top
 console.log(parser.parse(process.argv[2], oneOf(Expression, Number)));
