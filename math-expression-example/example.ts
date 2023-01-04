@@ -15,7 +15,7 @@ import { Parser } from "../src/parser";
 export const parser = new Parser();
 
 // so in the grand scheme, what we really are parsing is
-// expression OR number (alone number)
+// expression OR number (lone number)
 // where expression = <number> <operator> <number>
 // here number can be signed, or decimal, or both
 
